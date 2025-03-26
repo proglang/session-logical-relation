@@ -4,18 +4,18 @@
 
 ## Safety for expressions + add step indexing
 
-safe e = ∀ e'
-  → e ⟶* e'
-  → e' is a value
-    OR e' ⟶ e''
-    OR e' = E[send c v] and safe E[c]
-    OR e' = E[recv c] and ∃[ v' ] safe E[(c, v')] 	first order: fc(v') = ∅
-                                                         higher order: fc(v') ∩ fc(e') = ∅
-    OR e' = E[clos c] and safe E[()]
-    OR e' = E[wait c] and safe E[()]
-    OR e' = E[fork v] and safe E[c]     for all c ∉ fc(e')
+safe M = ∀ M'
+  : M ⟶* M'
+  ⇒ M' is a value
+    OR M' ⟶ M''
+    OR M' = 𝓔[send c V] and safe 𝓔[c]
+    OR M' = 𝓔[recv c] and ∃[ V' ] : safe 𝓔[(c, V')] 	first order: fc(V') = ∅
+                                                         higher order: fc(V') ∩ fc(e') = ∅
+    OR e' = 𝓔[term c] and safe 𝓔[*]
+    OR e' = 𝓔[wait c] and safe 𝓔[*]
+    OR e' = 𝓔[fork V] and safe 𝓔[c]     for all c ∉ fc(e')
 
 
-    OR e' = E[new]    and safe E[(c1, c2)]	for all c1 ≠ c2 ∉ fc(e')
-    OR e' = E[fork v] and safe E[()]
+    OR e' = 𝓔[new]    and safe 𝓔[(c1, c2)]	for all c1 ≠ c2 ∉ fc(e')
+    OR e' = 𝓔[fork V] and safe 𝓔[*]
 

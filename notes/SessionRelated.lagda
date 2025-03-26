@@ -6,6 +6,7 @@ Expressions and values
 
 M, N ::= x | λx.M | M N | * | (M, N) | let x, y = M in N
        | send M N | recv M | term M | wait M
+       | fork M
 
 V, W ::= x | λx.M | * | (V, W)
 
@@ -14,16 +15,17 @@ Expression evaluation contexts
 
 𝓔 ::= □ | 𝓔 N | V 𝓔 | (𝓔, N) | (V, 𝓔) | let x, y = 𝓔 in N
     | send 𝓔 N | send V 𝓔 | recv 𝓔 | close 𝓔
+    | fork 𝓔
 
 [τ-transitions: standard β-value reductions (omitted)]
 [labeled transitions]
 
-send c V ⟶c!V  c
-recv c   ⟶c?V  (V, c)
-term c   ⟶c!   *
-wait c   ⟶c?   *
+send c V ⟶c!V      c
+recv c   ⟶c?V      (V, c)
+term c   ⟶c!       *
+wait c   ⟶c?       *
 
-fork V   ⟶fork(V) 
+fork V   ⟶fork(V)c c
 
 Expression types
 ~~~~~~~~~~~~~~~~
@@ -46,7 +48,7 @@ P, Q ::= ⟨ M ⟩ | P ∥ Q | (νc. P ∥ Q)
 Process evaluation contexts
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-𝓟, 𝓠 ::= ⟨ 𝓔 ⟩ ∣ 𝓟 ∥ Q | Q ∥ 𝓟
+𝓟, 𝓠 ::= ⟨ 𝓔 ⟩ | 𝓟 ∥ Q | Q ∥ 𝓟
 
 [key labeled transition: labels match up to a silent transition]
 
@@ -64,6 +66,10 @@ P ⟶c! P′
 Q ⟶c? Q′
 ----------------------------
 (νc. P ∥ Q) ⟶ (P′ ∥ Q′)
+
+P ⟶fork(V)c P′
+----------------------------
+P ⟶ (νc. P′ ∥ ⟨ V c ⟩)
 
 Process typing
 ~~~~~~~~~~~~~~
@@ -203,7 +209,7 @@ Proof:
 
 * another attempt: unary logical relation
 
-  * assume that expression processes have type 1
+  * assume that expression processes have type 𝟙
   * to satisfy  |Σ′| ≤ |T|
 
     * restrict types to nested pairs that may contain sessions
